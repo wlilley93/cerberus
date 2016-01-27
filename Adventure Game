@@ -1,0 +1,289 @@
+# By Will Lilley
+
+import time
+
+# Define game parameters
+
+# Establish yes no question answers
+yes = {'yes', 'y', 'ye'}
+no = {'no', 'n'}
+
+class Hero:
+
+    def __init__(self, name):
+        self.name = name
+        self.health = 100
+        self.damageStat = 0
+        # Player Inventory Size cannot be exceeded (via inventory check function),
+        # stopping the player picking up too many items.
+        self.p_Inv_size = 2
+
+    ########################################
+    #            User inventory            #
+    #    Player begins with a single item  #
+    #                                      #
+        self.inventory = ["useless fluff"]
+    ########################################
+
+    # A tool to see how an event might have affected a player's stats
+    def printstats(self):
+        print("\nYour Name: " + player.name)
+        print("Your Current Health: " + str(player.health))
+        print("Inventory Listing " + str(player.inventory))
+        print("Inventory Slots " + str(player.p_Inv_size))
+        print("Items in your Inventory: " + str(len(player.inventory)))
+        print("Damage Infliction: " + str(player.damageStat) + "\n")
+
+    # ITEM LIST - lists all items in the game and their associated attributes.
+    # The give function performs an inventory check after each item is given
+    # to ensure that players do not exceed their inventory limit.
+    def give(self, item):
+
+        # The bag does not sit in the inventory because once picked up it becomes
+        # the inventory (increases the inv limit)
+        if item == "bag":
+            self.p_Inv_size += 2
+
+        elif item == "apple":
+            self.inventory.append("apple")
+            player.invcheck()
+
+        elif item == "p_apple":
+            self.inventory.append("glowing apple")
+            player.invcheck()
+
+        elif item == "ham":
+            self.inventory.append("ham")
+            player.invcheck()
+
+        elif item == "golden ham":
+            self.inventory.append("golden ham")
+            player.invcheck()
+
+        elif item == "knife":
+            self.damageStat += 10
+            self.inventory.append("knife")
+            player.invcheck()
+
+        elif item == "sword":
+            self.damageStat += 40
+            self.inventory.append("sword")
+            player.invcheck()
+
+        elif item == "mace":
+            self.damageStat += 50
+            self.inventory.append("mace")
+            player.invcheck()
+
+    # Defines the effect of eating food
+    def eat(self, food):
+
+        if food == "apple":
+            self.health += 10
+
+        elif food == "p_apple":
+            self.health -= 20
+
+        elif food == "ham":
+            self.health += 20
+
+        elif food == "golden Ham":
+            self.health += 50
+
+    # Defines the effect of inflicting damage upon an object with a weapon
+    def inflict(self, weapon):
+
+        if weapon == "knife":
+            self.health -= 10
+
+        elif weapon == "sword":
+            self.health -= 50
+
+        elif weapon == "mace":
+            self.health -= 100
+
+    # Removes the attributes of the most recently added item
+    def del_recent_item(self):
+
+        item_drop = player.inventory[-1]
+        if len(player.inventory) > player.p_Inv_size:
+
+            if item_drop == "apple":
+                self.inventory.pop()
+
+            elif item_drop == "p_apple":
+                self.inventory.pop()
+
+            elif item_drop == "ham":
+                self.inventory.pop()
+
+            elif item_drop == "golden Ham":
+                self.inventory.pop()
+
+            elif item_drop == "knife":
+                self.damageStat -= 10
+                self.inventory.pop()
+
+            elif item_drop == "sword":
+                self.damageStat -= 40
+                self.inventory.pop()
+
+            elif item_drop == "mace":
+                self.damageStat -= 50
+                self.inventory.pop()
+
+    # Exchanges a current inventory item with a prospective inventory item.
+    def item_exchange(self):
+
+        item_drop = player.inventory[-1]
+        print("\nYour inventory currently contains: ")
+
+        # The inventory limit may be exceeded, but the item still remains in the list/array.
+        # It is relied upon later in this function, and is removed through del_recent_item,
+        # so here the inventory is printed with the last item sliced off instead of removing it.
+
+        print(player.inventory[:-1])
+
+        # Calculate the length of inventory minus the index number of player's selected item to destroy
+
+        pos_reversal_int = (len(player.inventory) -
+                            (int(player.inventory.index(input("\nWhich item are "
+                             "you replacing?\n" + player.name + ""
+                                                                ": ")))))
+        # Take pos_reversal_int away from itself twice to give its value as a negative number
+
+        neg_reversal_int = (pos_reversal_int - (pos_reversal_int * 2))
+
+        # Use the negative number to locate and replace the chosen outgoing item with the incoming item
+        # The incoming item is currently located as the final item in the inventory list
+
+        player.inventory[neg_reversal_int] = item_drop
+        print("\nYour inventory now contains:")
+
+        # The incoming item is no longer relied upon so it can be deleted
+        # (along with attributes) through del_recent_item.
+
+        player.del_recent_item()
+        print(player.inventory)
+
+    # invcheck checks the number of items in the inventory against the potential inventory size.
+    # "Whilst it is true" that the inventory exceeds the maximum potential inventory size,
+    # ask whether the user wants to exchange or delete a prospective item.
+
+    def invcheck(self):
+
+        while len(player.inventory) > player.p_Inv_size:
+
+            time.sleep(0.6)
+            print("\nYour inventory is full.\nYou have no way to carry the " + (player.inventory[-1]) + ".\n")
+
+            if input("Do you want to exchange an item in your inventory for the " +
+                     (player.inventory[-1] + "?\n" + player.name + ": ")) in yes:
+
+                # if yes, initiate the item_exchange function as defined above.
+                player.item_exchange()
+
+            elif input("Do you want to exchange an item in your inventory for the " +
+                       (player.inventory[-1] + "?\n" + player.name + ": ")) in no:
+                player.del_recent_item()
+
+            else:
+                print("\nPlease respond with 'yes' or 'no'.\n")
+
+pass
+########################################################################################################################
+#                                                                                                                      #
+#                                                                                                                      #
+#                                                  STORY AREA                                                          #
+#                                                                                                                      #
+#                                                                                                                      #
+########################################################################################################################
+
+# Create player
+player = Hero(input("\nHello there, adventurer!\nWhat is your name?\n\nYou: "))
+print("\nWelcome, " + player.name + ", to the adventure.\n")
+print("You begin the adventure with " + str(player.health) + " health.")
+print("You don't have any weapons yet, so you inflict " + str(player.damageStat) + " damage.")
+print("You are holding " + str(len(player.inventory)) + " items and your inventory limit is " +
+      str(player.p_Inv_size) + ".\n")
+
+# Initial Room
+print("You are inside a small room.\nIn front of you is a table.\nBeyond the table is a door.\n")
+
+# Define 4 Questions:
+# Approach the table?
+# Pick up the bag?
+# Pick up the knife?
+# Pick up the apple?
+
+def table_approach_question():
+
+    table_approach = input("Approach the table?\n" + player.name + ": ").lower()
+
+    if table_approach in yes:
+        print("\nOn the table is a bag, a knife and an apple.\n")
+        bag_choice_question()
+
+    elif table_approach in no:
+        print("\nYou move past the table and leave through the door.")
+
+    else:
+        print("\nSorry, " + player.name + ". Please respond with 'yes' or 'no'.\n\n")
+        table_approach_question()
+
+def bag_choice_question():
+
+    bag_choice = input("Pick the bag up?\n" + player.name + ": ").lower()
+
+    if bag_choice in yes:
+        print("\nYou got the bag.")
+        player.give("bag")
+        print("You can now hold " + str(player.p_Inv_size) + " items.\n")
+        knife_choice_q()
+
+    elif bag_choice in no:
+        print("\nYou left the bag behind.\n")
+        knife_choice_q()
+
+    else:
+        print("\nSorry, " + player.name + ". Please respond with 'yes' or 'no'.\n\n")
+        bag_choice_question()
+
+def knife_choice_q():
+
+    knife_choice = input("Grab the knife?\n" + player.name + ": ").lower()
+
+    if knife_choice in yes:
+        print("\nYou got the knife.\n")
+        player.give("knife")
+        apple_p_choice_q()
+
+    elif knife_choice in no:
+        print("\nYou left the knife behind.\n")
+        apple_p_choice_q()
+
+    else:
+        print("\nSorry, " + player.name + ". Please respond with 'yes' or 'no'.\n\n")
+        knife_choice_q()
+
+def apple_p_choice_q():
+    apple_p_choice = input("Take the apple?\n" + player.name + ": ").lower()
+
+    if apple_p_choice in yes:
+        print("\nYou got the apple.")
+        print("The apple has an unnatural glow.")
+        player.give("apple")
+        print("\nYou move past the table and leave through the door.")
+
+    elif apple_p_choice in no:
+        print("\nYou left the apple behind.")
+        print("\nYou move past the table and leave through the door.")
+
+    else:
+        print("\nSorry, " + player.name + ". Please respond with 'yes' or 'no'.\n\n")
+        apple_p_choice_q()
+
+# Execute the question tree
+table_approach_question()
+
+player.printstats()
