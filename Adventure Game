@@ -204,7 +204,7 @@ class Hero:
         while len(player.inventory) > player.p_Inv_size:
 
             global item_to_drop
-            item_to_drop = self.inventory[-1]
+            item_to_drop = player.inventory[-1]
             time.sleep(0.6)
 
             # As the del_recent_item function has not run yet, the offending item is still
