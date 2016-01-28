@@ -13,7 +13,7 @@ class Hero:
     def __init__(self, name):
         self.name = name
         self.health = 100
-        self.damageStat = 0
+        self.damage_stat = 0
 
         # Player Inventory Size shouldn't be exceeded. p_Inv_size defines the potential size of the inventory.
 
@@ -34,7 +34,7 @@ class Hero:
         print("Inventory Listing " + str(player.inventory))
         print("Inventory Slots " + str(player.p_Inv_size))
         print("Items in your Inventory: " + str(len(player.inventory)))
-        print("Damage Infliction: " + str(player.damageStat) + "\n")
+        print("Damage Infliction: " + str(player.damage_stat) + "\n")
 
     # ITEM LIST - lists all items in the game and their associated attributes.
     # The give function performs an inventory check after each item is given
@@ -65,17 +65,17 @@ class Hero:
             player.invcheck()
 
         elif item == "knife":
-            self.damageStat += 10
+            self.damage_stat += 10
             self.inventory.append("knife")
             player.invcheck()
 
         elif item == "sword":
-            self.damageStat += 40
+            self.damage_stat += 40
             self.inventory.append("sword")
             player.invcheck()
 
         elif item == "mace":
-            self.damageStat += 50
+            self.damage_stat += 50
             self.inventory.append("mace")
             player.invcheck()
 
@@ -184,15 +184,15 @@ class Hero:
                 self.inventory.pop()
 
             elif item_to_drop == "knife":
-                self.damageStat -= 10
+                self.damage_stat -= 10
                 self.inventory.pop()
 
             elif item_to_drop == "sword":
-                self.damageStat -= 40
+                self.damage_stat -= 40
                 self.inventory.pop()
 
             elif item_to_drop == "mace":
-                self.damageStat -= 50
+                self.damage_stat -= 50
                 self.inventory.pop()
 
     # The initial inventory check.
@@ -248,7 +248,7 @@ pass
 player = Hero(input("\nHello there, adventurer!\nWhat is your name?\n\nYou: "))
 print("\nWelcome, " + player.name + ", to the adventure.\n")
 print("You begin the adventure with " + str(player.health) + " health.")
-print("You don't have any weapons yet, so you inflict " + str(player.damageStat) + " damage.")
+print("You don't have any weapons yet, so you inflict " + str(player.damage_stat) + " damage.")
 print("You are holding " + str(len(player.inventory)) + " items and your inventory limit is " +
       str(player.p_Inv_size) + ".\n")
 
@@ -304,7 +304,7 @@ def knife_choice_q():
     if knife_choice in yes:
         print("\nYou got the knife.")
         player.give("knife")
-        print("You now inflict " + str(player.damageStat) + " damage.\n")
+        print("You now inflict " + str(player.damage_stat) + " damage.\n")
         apple_p_choice_q()
 
     elif knife_choice in no:
