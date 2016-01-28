@@ -111,21 +111,22 @@ class Hero:
     # The next section deals with swapping out an item for a prospective item
     # when the inventory limit exceeds the potential inventory limit
     #
-    # Exchanges a current inventory item with a prospective inventory item.
+    # item_exchange exchanges a current inventory item with a prospective inventory item.
 
     def item_exchange(self):
 
-        # Thus far, when the inventory limit exceeds the potential inventory limit
-        # the item still remains in the list.
+        # When a new item causes the inventory limit to exceed the potential inventory
+        # limit, the item  remains in the list until removed.
         #
-        # It is relied upon later in item_exchange, and del_recent_item handles the removal of the item from the
-        # list, so here the inventory is printed with the last item sliced off instead of removing it to make it
-        # seem like the item has already been removed.
+        # It is not removed instantly because the offending item is relied upon later in item_exchange.
+        # There is no need to remove the item as del_recent_item removes the final list element.
+        # Here the inventory is printed with the last item sliced off instead of removing it
+        # to make it appear as though the item has already been removed.
 
         item_exchange_prompt = "\nYour inventory currently contains \n" + str(player.inventory[:-1])
         print(item_exchange_prompt)
 
-        # Calculate the length of inventory minus the index number of player's selected item to remove
+        # Calculate the length of inventory minus the index number of player's selected element to remove
 
         while True:
 
@@ -158,10 +159,6 @@ class Hero:
         player.del_recent_item()
         print(player.inventory)
 
-    # Check the number of items in the inventory against the potential inventory size.
-    # "Whilst it is true" that the inventory exceeds the maximum potential inventory size,
-    # ask whether the user wants to exchange or delete a prospective item.
-    #
     # del_recent_item drops the final element from the inventory list
     # (in this case the most recently added item)
 
@@ -172,10 +169,7 @@ class Hero:
         if len(player.inventory) > player.p_Inv_size:
 
             # If the item to be dropped matches the below strings, drop it
-            # from the inventory and also remove any extra
-            # attributes assigned to that item
-            #
-            # item_to_drop is defined outside of the Hero class below
+            # from the inventory and also remove any extra attributes assigned to that item
 
             if item_to_drop == "apple":
                 self.inventory.pop()
@@ -201,8 +195,9 @@ class Hero:
                 self.damageStat -= 50
                 self.inventory.pop()
 
-    # Whilst player inventory size exceeds potential inventory size, ask if player
-    # wishes to exchange a prospective item for currently owned item
+    # The initial inventory check.
+    # "Whilst it is true" that the inventory exceeds the maximum potential inventory size,
+    # Ask whether the user wants to exchange or delete a prospective item.
 
     def invcheck(self):
 
@@ -211,6 +206,11 @@ class Hero:
             global item_to_drop
             item_to_drop = self.inventory[-1]
             time.sleep(0.6)
+
+            # As the del_recent_item function has not run yet, the offending item is still
+            # the final element in the list. This means it can be called to create the following
+            # sentence:
+
             print("\nYour inventory is full.\nYou have no way to carry the " + (player.inventory[-1]) + ".\n")
 
             # Define the question that will be asked presently
