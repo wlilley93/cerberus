@@ -14,8 +14,9 @@ class Hero:
         self.name = name
         self.health = 100
         self.damageStat = 0
-        # Player Inventory Size cannot be exceeded (via inventory check function),
-        # stopping the player picking up too many items.
+
+        # Player Inventory Size shouldn't be exceeded. p_Inv_size defines the potential size of the inventory.
+
         self.p_Inv_size = 2
 
     ########################################
@@ -26,6 +27,7 @@ class Hero:
     ########################################
 
     # A tool to see how an event might have affected a player's stats
+
     def printstats(self):
         print("\nYour Name: " + player.name)
         print("Your Current Health: " + str(player.health))
@@ -37,10 +39,12 @@ class Hero:
     # ITEM LIST - lists all items in the game and their associated attributes.
     # The give function performs an inventory check after each item is given
     # to ensure that players do not exceed their inventory limit.
+
     def give(self, item):
 
         # The bag does not sit in the inventory because once picked up it becomes
-        # the inventory (increases the inv limit)
+        # the inventory (and increases the potential inventory size limit by 2)
+
         if item == "bag":
             self.p_Inv_size += 2
 
@@ -76,6 +80,7 @@ class Hero:
             player.invcheck()
 
     # Defines the effect of eating food
+
     def eat(self, food):
 
         if food == "apple":
@@ -91,6 +96,7 @@ class Hero:
             self.health += 50
 
     # Defines the effect of inflicting damage upon an object with a weapon
+
     def inflict(self, weapon):
 
         if weapon == "knife":
@@ -102,54 +108,40 @@ class Hero:
         elif weapon == "mace":
             self.health -= 100
 
-    # Removes the attributes of the most recently added item
-    def del_recent_item(self):
-
-        item_drop = player.inventory[-1]
-        if len(player.inventory) > player.p_Inv_size:
-
-            if item_drop == "apple":
-                self.inventory.pop()
-
-            elif item_drop == "p_apple":
-                self.inventory.pop()
-
-            elif item_drop == "ham":
-                self.inventory.pop()
-
-            elif item_drop == "golden Ham":
-                self.inventory.pop()
-
-            elif item_drop == "knife":
-                self.damageStat -= 10
-                self.inventory.pop()
-
-            elif item_drop == "sword":
-                self.damageStat -= 40
-                self.inventory.pop()
-
-            elif item_drop == "mace":
-                self.damageStat -= 50
-                self.inventory.pop()
-
+    # The next section deals with swapping out an item for a prospective item
+    # when the inventory limit exceeds the potential inventory limit
+    #
     # Exchanges a current inventory item with a prospective inventory item.
+
     def item_exchange(self):
 
-        item_drop = player.inventory[-1]
-        print("\nYour inventory currently contains: ")
+        # Thus far, when the inventory limit exceeds the potential inventory limit
+        # the item still remains in the list.
+        #
+        # It is relied upon later in item_exchange, and del_recent_item handles the removal of the item from the
+        # list, so here the inventory is printed with the last item sliced off instead of removing it to make it
+        # seem like the item has already been removed.
 
-        # The inventory limit may be exceeded, but the item still remains in the list/array.
-        # It is relied upon later in this function, and is removed through del_recent_item,
-        # so here the inventory is printed with the last item sliced off instead of removing it.
+        item_exchange_prompt = "\nYour inventory currently contains \n" + str(player.inventory[:-1])
+        print(item_exchange_prompt)
 
-        print(player.inventory[:-1])
+        # Calculate the length of inventory minus the index number of player's selected item to remove
 
-        # Calculate the length of inventory minus the index number of player's selected item to destroy
+        while True:
 
-        pos_reversal_int = (len(player.inventory) -
-                            (int(player.inventory.index(input("\nWhich item are "
-                             "you replacing?\n" + player.name + ""
-                                                                ": ")))))
+            try:
+
+                global pos_reversal_int
+                pos_reversal_int = (len(player.inventory) - (int(player.inventory.index(input("\nWhich item are "
+                                    "you replacing?\n" + player.name + ""
+                                                                                              ": ")))))
+                break
+
+            except ValueError:
+
+                print("\nSorry, that item isn't in your inventory.")
+                print(item_exchange_prompt)
+
         # Take pos_reversal_int away from itself twice to give its value as a negative number
 
         neg_reversal_int = (pos_reversal_int - (pos_reversal_int * 2))
@@ -157,38 +149,91 @@ class Hero:
         # Use the negative number to locate and replace the chosen outgoing item with the incoming item
         # The incoming item is currently located as the final item in the inventory list
 
-        player.inventory[neg_reversal_int] = item_drop
+        player.inventory[neg_reversal_int] = item_to_drop
         print("\nYour inventory now contains:")
-
+        #
         # The incoming item is no longer relied upon so it can be deleted
         # (along with attributes) through del_recent_item.
-
+        #
         player.del_recent_item()
         print(player.inventory)
 
-    # invcheck checks the number of items in the inventory against the potential inventory size.
+    # Check the number of items in the inventory against the potential inventory size.
     # "Whilst it is true" that the inventory exceeds the maximum potential inventory size,
     # ask whether the user wants to exchange or delete a prospective item.
+    #
+    # del_recent_item drops the final element from the inventory list
+    # (in this case the most recently added item)
+
+    def del_recent_item(self):
+
+        # First check that the inventory size exceeds the potential inventory size
+
+        if len(player.inventory) > player.p_Inv_size:
+
+            # If the item to be dropped matches the below strings, drop it
+            # from the inventory and also remove any extra
+            # attributes assigned to that item
+            #
+            # item_to_drop is defined outside of the Hero class below
+
+            if item_to_drop == "apple":
+                self.inventory.pop()
+
+            elif item_to_drop == "p_apple":
+                self.inventory.pop()
+
+            elif item_to_drop == "ham":
+                self.inventory.pop()
+
+            elif item_to_drop == "golden Ham":
+                self.inventory.pop()
+
+            elif item_to_drop == "knife":
+                self.damageStat -= 10
+                self.inventory.pop()
+
+            elif item_to_drop == "sword":
+                self.damageStat -= 40
+                self.inventory.pop()
+
+            elif item_to_drop == "mace":
+                self.damageStat -= 50
+                self.inventory.pop()
+
+    # Whilst player inventory size exceeds potential inventory size, ask if player
+    # wishes to exchange a prospective item for currently owned item
 
     def invcheck(self):
 
         while len(player.inventory) > player.p_Inv_size:
 
+            global item_to_drop
+            item_to_drop = self.inventory[-1]
             time.sleep(0.6)
             print("\nYour inventory is full.\nYou have no way to carry the " + (player.inventory[-1]) + ".\n")
 
-            if input("Do you want to exchange an item in your inventory for the " +
-                     (player.inventory[-1] + "?\n" + player.name + ": ")) in yes:
+            # Define the question that will be asked presently
+            item_exchange_question = input("Do you want to exchange an item in your inventory for the " +
+                                           (player.inventory[-1] + "?\n" + player.name + ": "))
 
-                # if yes, initiate the item_exchange function as defined above.
-                player.item_exchange()
+            if item_exchange_question in yes:
 
-            elif input("Do you want to exchange an item in your inventory for the " +
-                       (player.inventory[-1] + "?\n" + player.name + ": ")) in no:
-                player.del_recent_item()
+                    # Initiate the item exchange function
+                    player.item_exchange()
+
+            elif item_exchange_question in no:
+
+                    # Remove the item from the inventory
+                    print("You leave the " + item_to_drop + " behind.")
+                    player.del_recent_item()
 
             else:
                 print("\nPlease respond with 'yes' or 'no'.\n")
+
+                # Repeat the question
+
+                player.invcheck()
 
 pass
 ########################################################################################################################
@@ -206,6 +251,9 @@ print("You begin the adventure with " + str(player.health) + " health.")
 print("You don't have any weapons yet, so you inflict " + str(player.damageStat) + " damage.")
 print("You are holding " + str(len(player.inventory)) + " items and your inventory limit is " +
       str(player.p_Inv_size) + ".\n")
+
+# item_to_drop is used in the inventory switching above (see del_recent_item)
+
 
 # Initial Room
 print("You are inside a small room.\nIn front of you is a table.\nBeyond the table is a door.\n")
@@ -254,8 +302,9 @@ def knife_choice_q():
     knife_choice = input("Grab the knife?\n" + player.name + ": ").lower()
 
     if knife_choice in yes:
-        print("\nYou got the knife.\n")
+        print("\nYou got the knife.")
         player.give("knife")
+        print("You now inflict " + str(player.damageStat) + " damage.\n")
         apple_p_choice_q()
 
     elif knife_choice in no:
