@@ -1,6 +1,6 @@
 # Main Story File
 
-from Heroclass import *
+from hero_class import *
 
 # Create player
 player = Hero(input("\nHello there, adventurer!\nWhat is your name?\n\nYou: "))
