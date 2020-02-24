@@ -1,2 +1,3 @@
 # Cerberus
-Complete beginner trying to make his way in the coding world.
+
+Test text in README.md
