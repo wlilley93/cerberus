@@ -1,3 +1,5 @@
+# Main Story File
+
 from Heroclass import *
 
 # Create player
